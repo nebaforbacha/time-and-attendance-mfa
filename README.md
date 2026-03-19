@@ -150,6 +150,10 @@ Email Security
 •	New account notifications
 •	Security event alerts
 
+Future Enhancements with AI Integration
+Anomaly Detection: Implementing Scikit-learn to identify unusual clock-in patterns (e.g., geographic IP jumps).
+Biometric Integration: Potential for Computer Vision-based face verification to augment the existing MFA.
+
 
 
 
