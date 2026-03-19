@@ -1,0 +1,79 @@
+{% extends "base.html" %} {% block title %}Attendance Report{% endblock %} {%
+block content %}
+<h2 class="text-white mb-4">
+  <i class="fas fa-chart-bar"></i> Attendance Report
+</h2>
+<div class="card mb-3">
+  <div class="card-body">
+    <form method="GET" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">User</label>
+        <select class="form-select" name="user_id">
+          <option value="">All Users</option>
+          {% for user in users %}
+          <option value="{{ user.id }}">{{ user.username }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Start Date</label>
+        <input type="date" class="form-control" name="start_date" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">End Date</label>
+        <input type="date" class="form-control" name="end_date" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">&nbsp;</label>
+        <button type="submit" class="btn btn-primary w-100">
+          <i class="fas fa-search"></i> Filter
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><i class="fas fa-table"></i> Records</div>
+  <div class="card-body">
+    {% if records.items %}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Date</th>
+            <th>Clock In</th>
+            <th>Clock Out</th>
+            <th>Hours</th>
+            <th>IP Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in records.items %}
+          <tr>
+            <td>{{ record.user.username }}</td>
+            <td>{{ record.date.strftime('%b %d, %Y') }}</td>
+            <td>{{ record.clock_in_time.strftime('%I:%M %p') }}</td>
+            <td>
+              {% if record.clock_out_time %}{{
+              record.clock_out_time.strftime('%I:%M %p') }}{% else %}<span
+                class="badge bg-warning"
+                >Active</span
+              >{% endif %}
+            </td>
+            <td>
+              {% if record.work_hours %}{{ record.work_hours }} hrs{% else %}-{%
+              endif %}
+            </td>
+            <td><small>{{ record.ip_address }}</small></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No records found.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

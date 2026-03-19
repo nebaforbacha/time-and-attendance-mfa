@@ -1,0 +1,63 @@
+{% extends "base.html" %} {% block title %}Request Leave{% endblock %} {% block
+content %}
+<h2 class="text-white mb-4">
+  <i class="fas fa-plane-departure"></i> Request Leave
+</h2>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-calendar-alt"></i> New Leave Request
+      </div>
+      <div class="card-body">
+        <form method="POST">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Start Date</label>
+              <input
+                type="date"
+                class="form-control"
+                name="start_date"
+                required
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">End Date</label>
+              <input
+                type="date"
+                class="form-control"
+                name="end_date"
+                required
+              />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Leave Type</label>
+            <select class="form-select" name="leave_type" required>
+              <option value="">Select type...</option>
+              <option value="sick">Sick Leave</option>
+              <option value="vacation">Vacation</option>
+              <option value="personal">Personal Leave</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Reason</label>
+            <textarea
+              class="form-control"
+              name="reason"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Submit Request
+          </button>
+          <a href="{{ url_for('my_leaves') }}" class="btn btn-secondary"
+            >Cancel</a
+          >
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

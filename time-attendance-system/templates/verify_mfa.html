@@ -1,0 +1,101 @@
+{% extends "base.html" %} {% block title %}Verify MFA - Time & Attendance
+System{% endblock %} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header text-center">
+        <h4><i class="fas fa-mobile-alt"></i> Two-Factor Authentication</h4>
+      </div>
+      <div class="card-body p-4">
+        <div class="text-center mb-4">
+          <div
+            class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center"
+            style="width: 80px; height: 80px"
+          >
+            <i class="fas fa-shield-alt fa-3x text-primary"></i>
+          </div>
+        </div>
+
+        <p class="text-center mb-4">
+          Open your authenticator app and enter the 6-digit code to continue.
+        </p>
+
+        <form method="POST" action="{{ url_for('verify_mfa') }}">
+          <div class="mb-3">
+            <label for="token" class="form-label">
+              <i class="fas fa-key"></i> Authentication Code
+            </label>
+            <input
+              type="text"
+              class="form-control form-control-lg text-center"
+              id="token"
+              name="token"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              placeholder="000000"
+              required
+              autofocus
+              style="letter-spacing: 8px; font-size: 24px"
+            />
+            <small class="form-text text-muted">
+              <i class="fas fa-clock"></i> Code refreshes every 30 seconds
+            </small>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg w-100">
+            <i class="fas fa-sign-in-alt"></i> Verify & Login
+          </button>
+        </form>
+
+        <div class="text-center mt-4">
+          <p class="text-muted mb-2">
+            <i class="fas fa-question-circle"></i> Having trouble?
+          </p>
+          <ul class="list-unstyled small text-muted">
+            <li>Make sure your device time is accurate</li>
+            <li>Wait for the code to refresh and try again</li>
+            <li>Contact your administrator if problems persist</li>
+          </ul>
+        </div>
+
+        <hr class="my-4" />
+
+        <div class="text-center">
+          <a
+            href="{{ url_for('logout') }}"
+            class="btn btn-link text-decoration-none"
+          >
+            <i class="fas fa-arrow-left"></i> Back to Login
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info mt-3">
+      <i class="fas fa-info-circle"></i>
+      <strong>Security Notice:</strong> Never share your authentication codes
+      with anyone, including administrators.
+    </div>
+  </div>
+</div>
+
+<script>
+  // Auto-submit form when 6 digits are entered
+  document.getElementById("token").addEventListener("input", function (e) {
+    if (e.target.value.length === 6) {
+      // Optional: Auto-submit after brief delay
+      setTimeout(() => {
+        if (e.target.value.length === 6) {
+          e.target.form.submit();
+        }
+      }, 500);
+    }
+  });
+
+  // Only allow numbers
+  document.getElementById("token").addEventListener("keypress", function (e) {
+    if (e.key < "0" || e.key > "9") {
+      e.preventDefault();
+    }
+  });
+</script>
+{% endblock %}

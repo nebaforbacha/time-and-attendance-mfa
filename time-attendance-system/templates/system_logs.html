@@ -1,0 +1,56 @@
+{% extends "base.html" %} {% block title %}System Logs{% endblock %} {% block
+content %}
+<h2 class="text-white mb-4">
+  <i class="fas fa-file-alt"></i> System Activity Logs
+</h2>
+<div class="card">
+  <div class="card-header"><i class="fas fa-list"></i> Activity Log</div>
+  <div class="card-body">
+    {% if logs.items %}
+    <div class="table-responsive">
+      <table class="table table-hover table-sm">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Action</th>
+            <th>Details</th>
+            <th>User</th>
+            <th>IP Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs.items %}
+          <tr>
+            <td>
+              <small>{{ log.timestamp.strftime('%b %d, %I:%M %p') }}</small>
+            </td>
+            <td><span class="badge bg-secondary">{{ log.action }}</span></td>
+            <td><small>{{ log.details }}</small></td>
+            <td>
+              {% if log.user %}{{ log.user.username }}{% else %}-{% endif %}
+            </td>
+            <td><small>{{ log.ip_address }}</small></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <nav>
+      <ul class="pagination">
+        {% if logs.has_prev %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ logs.prev_num }}">Previous</a>
+        </li>
+        {% endif %} {% if logs.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ logs.next_num }}">Next</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% else %}
+    <p class="text-center text-muted">No logs available.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

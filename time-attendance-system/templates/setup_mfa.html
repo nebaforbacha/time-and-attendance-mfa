@@ -1,0 +1,104 @@
+{% extends "base.html" %} {% block title %}Setup MFA - Time & Attendance
+System{% endblock %} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header text-center">
+        <h4>
+          <i class="fas fa-shield-alt"></i> Setup Multi-Factor Authentication
+        </h4>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i>
+          <strong>Enhanced Security:</strong> MFA adds an extra layer of
+          security by requiring a code from your phone in addition to your
+          password.
+        </div>
+
+        <h5 class="mb-3">Step 1: Install Authenticator App</h5>
+        <p>Download one of these apps on your smartphone:</p>
+        <ul>
+          <li><strong>Google Authenticator</strong> (iOS/Android)</li>
+          <li><strong>Microsoft Authenticator</strong> (iOS/Android)</li>
+          <li><strong>Authy</strong> (iOS/Android)</li>
+        </ul>
+
+        <hr class="my-4" />
+
+        <h5 class="mb-3">Step 2: Scan QR Code</h5>
+        <div class="text-center mb-4">
+          <div class="p-3 bg-white d-inline-block rounded">
+            <img
+              src="data:image/png;base64,{{ qr_code }}"
+              alt="MFA QR Code"
+              class="img-fluid"
+              style="max-width: 250px"
+            />
+          </div>
+          <p class="mt-3 text-muted">
+            <small>Open your authenticator app and scan this QR code</small>
+          </p>
+        </div>
+
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          <strong>Manual Entry:</strong> If you can't scan the QR code, enter
+          this secret key manually:<br />
+          <code class="fs-5">{{ secret }}</code>
+        </div>
+
+        <hr class="my-4" />
+
+        <h5 class="mb-3">Step 3: Verify Setup</h5>
+        <p>
+          Enter the 6-digit code from your authenticator app to complete setup:
+        </p>
+
+        <form method="POST" action="{{ url_for('verify_mfa_setup') }}">
+          <div class="mb-3">
+            <label for="token" class="form-label">
+              <i class="fas fa-key"></i> Verification Code
+            </label>
+            <input
+              type="text"
+              class="form-control form-control-lg text-center"
+              id="token"
+              name="token"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              placeholder="000000"
+              required
+              autofocus
+            />
+            <small class="form-text text-muted">
+              Enter the 6-digit code shown in your authenticator app
+            </small>
+          </div>
+          <button type="submit" class="btn btn-success btn-lg w-100">
+            <i class="fas fa-check"></i> Enable MFA
+          </button>
+        </form>
+
+        <div class="text-center mt-3">
+          <a href="{{ url_for('dashboard') }}" class="btn btn-link">
+            <i class="fas fa-arrow-left"></i> Skip for now
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-body">
+        <h6><i class="fas fa-question-circle"></i> Why use MFA?</h6>
+        <ul class="mb-0">
+          <li>Prevents unauthorized access even if your password is stolen</li>
+          <li>Protects against buddy punching and time theft</li>
+          <li>Ensures only you can clock in/out for yourself</li>
+          <li>Meets security compliance requirements</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

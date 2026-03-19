@@ -1,0 +1,201 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard - Time & Attendance
+System{% endblock %} {% block content %}
+<h2 class="text-white mb-4">
+  <i class="fas fa-user-shield"></i> Administrator Dashboard
+</h2>
+
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body stats-card">
+        <i class="fas fa-users text-primary"></i>
+        <h3>{{ total_users }}</h3>
+        <p class="text-muted mb-0">Total Users</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body stats-card">
+        <i class="fas fa-user-check text-success"></i>
+        <h3>{{ attendance_today }}</h3>
+        <p class="text-muted mb-0">Clocked In Today</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body stats-card">
+        <i class="fas fa-clock text-warning"></i>
+        <h3>{{ clocked_in|length }}</h3>
+        <p class="text-muted mb-0">Currently Active</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body stats-card">
+        <i class="fas fa-calendar-times text-danger"></i>
+        <h3>{{ pending_leaves }}</h3>
+        <p class="text-muted mb-0">Pending Leaves</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-user-clock"></i> Currently Clocked In
+      </div>
+      <div class="card-body">
+        {% if clocked_in %}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Clock In Time</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for attendance in clocked_in %}
+              <tr>
+                <td>
+                  <i class="fas fa-user-circle"></i>
+                  {{ attendance.user.username }}
+                </td>
+                <td>{{ attendance.clock_in_time.strftime('%I:%M %p') }}</td>
+                <td>
+                  <span class="badge bg-info">Active</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="text-center text-muted">No employees currently clocked in</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <i class="fas fa-history"></i> Recent System Activity
+      </div>
+      <div class="card-body" style="max-height: 400px; overflow-y: auto">
+        {% if recent_logs %}
+        <div class="list-group list-group-flush">
+          {% for log in recent_logs %}
+          <div class="list-group-item">
+            <div class="d-flex w-100 justify-content-between">
+              <h6 class="mb-1">
+                {% if 'login' in log.action.lower() %}
+                <i class="fas fa-sign-in-alt text-primary"></i>
+                {% elif 'clock' in log.action.lower() %}
+                <i class="fas fa-clock text-success"></i>
+                {% elif 'delete' in log.action.lower() %}
+                <i class="fas fa-trash text-danger"></i>
+                {% else %}
+                <i class="fas fa-info-circle text-info"></i>
+                {% endif %} {{ log.action }}
+              </h6>
+              <small class="text-muted"
+                >{{ log.timestamp.strftime('%I:%M %p') }}</small
+              >
+            </div>
+            <p class="mb-1">{{ log.details }}</p>
+            <small class="text-muted">
+              {% if log.user %} User: {{ log.user.username }} | {% endif %} IP:
+              {{ log.ip_address }}
+            </small>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center text-muted">No recent activity</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header"><i class="fas fa-tools"></i> Quick Actions</div>
+      <div class="card-body">
+        <div class="row text-center">
+          <div class="col-md-2 mb-3">
+            <a
+              href="{{ url_for('create_user') }}"
+              class="btn btn-outline-success w-100"
+            >
+              <i class="fas fa-user-plus fa-2x mb-2"></i><br />
+              Create User
+            </a>
+          </div>
+          <div class="col-md-2 mb-3">
+            <a
+              href="{{ url_for('admin_users') }}"
+              class="btn btn-outline-primary w-100"
+            >
+              <i class="fas fa-users-cog fa-2x mb-2"></i><br />
+              Manage Users
+            </a>
+          </div>
+          <div class="col-md-2 mb-3">
+            <a
+              href="{{ url_for('attendance_report') }}"
+              class="btn btn-outline-info w-100"
+            >
+              <i class="fas fa-chart-bar fa-2x mb-2"></i><br />
+              Attendance Report
+            </a>
+          </div>
+          <div class="col-md-2 mb-3">
+            <a
+              href="{{ url_for('leave_requests') }}"
+              class="btn btn-outline-warning w-100"
+            >
+              <i class="fas fa-calendar-check fa-2x mb-2"></i><br />
+              Leave Requests
+            </a>
+          </div>
+          <div class="col-md-2 mb-3">
+            <a
+              href="{{ url_for('system_logs') }}"
+              class="btn btn-outline-secondary w-100"
+            >
+              <i class="fas fa-file-alt fa-2x mb-2"></i><br />
+              System Logs
+            </a>
+          </div>
+          <div class="col-md-2 mb-3">
+            <a
+              href="{{ url_for('dashboard') }}"
+              class="btn btn-outline-dark w-100"
+            >
+              <i class="fas fa-home fa-2x mb-2"></i><br />
+              User View
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if pending_leaves > 0 %}
+<div class="alert alert-warning mt-4">
+  <i class="fas fa-exclamation-triangle"></i>
+  <strong>Action Required:</strong> You have {{ pending_leaves }} pending leave
+  request(s) waiting for approval.
+  <a href="{{ url_for('leave_requests') }}" class="alert-link">Review now</a>
+</div>
+{% endif %} {% endblock %}
